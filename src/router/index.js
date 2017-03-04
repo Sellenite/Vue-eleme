@@ -8,22 +8,22 @@ Vue.use(Router);
 
 let router = new Router();
 router.push(
-  {
-    path: '/goods'
-  }
+    {
+        path: '/goods'
+    }
 );
 
 export default new Router({
-  routes: [
-    {
-      path: '/goods', component: goods
-    },
-    {
-      path: '/ratings', component: ratings
-    },
-    {
-      path: '/seller', component: seller
-    }
-  ],
-  linkActiveClass: 'active'
+    routes: [
+        {
+            path: '/goods', component: goods
+        },
+        {
+            path: '/ratings', component: ratings
+        },
+        {
+            path: '/seller', component: seller
+        }
+    ],
+    linkActiveClass: 'active'
 });
