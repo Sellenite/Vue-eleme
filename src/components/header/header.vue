@@ -18,7 +18,7 @@
                     <span class="text">{{seller.supports[0].description}}</span>
                 </div>
             </div>
-            <div v-if="seller.supports" class="support-count">
+            <div v-if="seller.supports" class="support-count" v-on:click="showDetail">
                 <span class="count">{{seller.supports.length}}个</span>
                 <i class="icon-keyboard_arrow_right"></i>
             </div>
@@ -31,23 +31,48 @@
         <div class="background">
             <img v-bind:src="seller.avatar" width="100%" height="auto">
         </div>
+        <div class="detail" v-show="detailShow" v-on:click="showDetail">
+            <div class="detail-wrapper clearfix">
+                <div class="detail-main">
+                    <h1 class="name">{{seller.name}}</h1>
+                    <star v-bind:size="48" v-bind:score="seller.score"></star>
+                </div>
+            </div>
+            <div class="detail-close">
+                <i class="icon-close"></i>
+            </div>
+        </div>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
+    import star from '../star/star';
     export default {
         props: {
             seller: {
                 type: Object
             }
         },
+        data() {
+            return {
+                detailShow: false
+            };
+        },
         filters: {
             minFromat: function (value) {
                 return value + '分钟';
             }
         },
+        methods: {
+            showDetail() {
+            this.detailShow = !this.detailShow;
+          }
+        },
         created() {
             this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee'];
+        },
+        components: {
+            star
         }
     };
 </script>
@@ -165,4 +190,31 @@
                 filter : blur(10px)
                 position : relative
                 top : -85%
+        .detail
+            position : fixed
+            top : 0
+            left : 0
+            z-index : 100
+            width : 100%
+            height : 100%
+            overflow : auto
+            background : rgba(7, 17, 27, 0.8)
+            .detail-wrapper
+                min-height : 100%
+                width : 100%
+                .detail-main
+                    margin-top : 64px
+                    padding-bottom : 64px
+                    .name
+                        line-height : 16px
+                        text-align : center
+                        font-size : 16px
+                        font-weight : 700
+            .detail-close
+                position : relative
+                width : 32px
+                height : 32px
+                margin : -64px auto 0 auto
+                clear : both
+                font-size : 32px
 </style>
