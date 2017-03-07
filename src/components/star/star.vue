@@ -23,6 +23,7 @@
                 return 'star-' + this.size;
             },
             itemClasses() {
+                /* 使用result数组作为返回值，用on，half，off作为每个遍历的class */
                 let result = [];
                 let score = Math.floor(this.score * 2) / 2;
                 let hasDecimal = score % 1 !== 0;
