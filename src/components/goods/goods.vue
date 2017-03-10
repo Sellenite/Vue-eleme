@@ -2,7 +2,7 @@
     <div class="goods">
         <div class="menu-wrapper" ref="menuWrapper">
             <ul>
-                <li v-for="(item, index) in goods" class="menu-item">
+                <li v-for="(item, index) in goods" class="menu-item" v-bind:class="{'current':currentIndex===index}" v-on:click="selectMenu(index, $event)">
                     <span class="text border-1px">
                         <span v-show="item.type>0" class="icon" v-bind:class="classMap[item.type]"></span>{{item.name}}
                     </span>
@@ -11,7 +11,7 @@
         </div>
         <div class="foods-wrapper" ref="foodsWrapper">
             <ul>
-                <li v-for="(item, index) in goods" class="food-list">
+                <li v-for="(item, index) in goods" class="food-list food-list-hook">
                     <h1 class="title">{{item.name}}</h1>
                     <ul>
                         <li v-for="food in item.foods" class="food-item border-1px">
@@ -51,7 +51,9 @@
         },
         data() {
             return {
-                goods: []
+                goods: [],
+                listHeight: [],
+                scrollY: 0
             };
         },
         created() {
@@ -59,17 +61,64 @@
                 response = response.body;
                 if (response.errno === ERR_OK) {
                     this.goods = response.data;
+                    /* 当DOM更新后执行以下代码 */
                     this.$nextTick(() => {
                         this._initScroll();
+                        this._calculateHeight();
                     });
                 }
             });
+            /* 用来绑定图标的class */
             this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee'];
         },
+        computed: {
+            /* 每当其中的数据有变化的时候就会计算，这里是通过scrollY的变化来返回当前在foodmenu的index */
+            currentIndex() {
+                for (let i = 0; i < this.listHeight.length; i++) {
+                    let height1 = this.listHeight[i];
+                    let height2 = this.listHeight[i + 1];
+                    if (!height2 || (this.scrollY >= height1 && this.scrollY < height2)) {
+                        return i;
+                    }
+                }
+                return 0;
+            }
+        },
         methods: {
+            /* 设定原始option和当滚动的时候拿到scrollY */
             _initScroll() {
-                this.menuScroll = new BScroll(this.$refs.menuWrapper, {});
-                this.foodScroll = new BScroll(this.$refs.foodsWrapper, {});
+                /* 启用click事件 */
+                this.menuScroll = new BScroll(this.$refs.menuWrapper, {
+                    click: true
+                });
+                /* 延迟到事件完毕后触发 */
+                this.foodScroll = new BScroll(this.$refs.foodsWrapper, {
+                    probeType: 3
+                });
+                /* better-scroll设的event */
+                this.foodScroll.on('scroll', (pos) => {
+                    this.scrollY = Math.abs(Math.round(pos.y));
+                });
+            },
+            /* 计算每个大的list的相对高度 */
+            _calculateHeight() {
+                let foodList = this.$refs.foodsWrapper.getElementsByClassName('food-list-hook');
+                let height = 0;
+                for (let i = 0; i < foodList.length; i++) {
+                    let item = foodList[i];
+                    height = (item.offsetTop - 1);
+                    this.listHeight.push(height);
+                    console.log(this.listHeight);
+                }
+            },
+            /* 点击menu时跳转 */
+            selectMenu(index, event) {
+                if (!event._constructed) {
+                    return;
+                }
+                let foodList = this.$refs.foodsWrapper.getElementsByClassName('food-list-hook');
+                let el = foodList[index];
+                this.foodScroll.scrollToElement(el, 300);
             }
         }
     };
@@ -95,6 +144,13 @@
                 width: 56px
                 line-height: 14px
                 padding: 0 17px
+                &.current
+                    position: relative
+                    margin-top: -1px
+                    background: #FFF
+                    font-weight: 700
+                    .text
+                        border-none()
                 .icon
                     display: inline-block
                     vertical-align: top
@@ -150,7 +206,7 @@
                         color: rgb(7, 17, 27)
                     .desc
                         margin-bottom: 8px
-                        line-height : 12px
+                        line-height: 12px
                         font-size: 10px
                         color: rgb(147, 153, 159)
                     .extra
