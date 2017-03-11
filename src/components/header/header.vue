@@ -33,29 +33,29 @@
         </div>
         <transition name="fade">
             <div class="detail" v-show="detailShow" v-on:click="showDetail">
-            <div class="detail-wrapper clearfix">
-                <div class="detail-main">
-                    <h1 class="name">{{seller.name}}</h1>
-                    <div class="star-wrapper">
-                        <star v-bind:size="48" v-bind:score="seller.score"></star>
-                    </div>
-                    <flexTitle title="优惠信息"></flexTitle>
-                    <ul v-if="seller.supports" class="supports">
-                        <li v-for="(item, index) in seller.supports" class="support-item">
-                            <span class="icon" v-bind:class="classMap[seller.supports[index].type]"></span>
-                            <span class="text">{{seller.supports[index].description}}</span>
-                        </li>
-                    </ul>
-                    <flexTitle title="商家公告"></flexTitle>
-                    <div class="bulletin">
-                        <p class="content">{{seller.bulletin}}</p>
+                <div class="detail-wrapper clearfix">
+                    <div class="detail-main">
+                        <h1 class="name">{{seller.name}}</h1>
+                        <div class="star-wrapper">
+                            <star v-bind:size="48" v-bind:score="seller.score"></star>
+                        </div>
+                        <flexTitle title="优惠信息"></flexTitle>
+                        <ul v-if="seller.supports" class="supports">
+                            <li v-for="(item, index) in seller.supports" class="support-item">
+                                <span class="icon" v-bind:class="classMap[seller.supports[index].type]"></span>
+                                <span class="text">{{seller.supports[index].description}}</span>
+                            </li>
+                        </ul>
+                        <flexTitle title="商家公告"></flexTitle>
+                        <div class="bulletin">
+                            <p class="content">{{seller.bulletin}}</p>
+                        </div>
                     </div>
                 </div>
+                <div class="detail-close">
+                    <i class="icon-close"></i>
+                </div>
             </div>
-            <div class="detail-close">
-                <i class="icon-close"></i>
-            </div>
-        </div>
         </transition>
     </div>
 </template>
