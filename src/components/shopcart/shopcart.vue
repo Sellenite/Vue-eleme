@@ -15,6 +15,13 @@
                 <div class="pay" v-bind:class="{'enough':totalPrice>=minPrice, 'not-enough':totalPrice<minPrice}">{{payDesc}}</div>
             </div>
         </div>
+        <div class="ball-container">
+            <transition name="drop">
+                <div class="ball" v-for="ball in balls" v-show="ball.show">
+                    <div class="inner"></div>
+                </div>
+            </transition>
+        </div>
     </div>
 </template>
 
@@ -35,6 +42,27 @@
                 type: Number,
                 default: 20
             }
+        },
+        data() {
+            return {
+                balls: [
+                    {
+                        show: false
+                    },
+                    {
+                        show: false
+                    },
+                    {
+                        show: false
+                    },
+                    {
+                        show: false
+                    },
+                    {
+                        show: false
+                    }
+                ]
+            };
         },
         computed: {
             /* 计算总金额 */
@@ -63,6 +91,11 @@
                 } else {
                     return '去结算';
                 }
+            }
+        },
+        methods: {
+            drop(el) {
+
             }
         }
     };
@@ -154,8 +187,22 @@
                     font-weight: 700
                     background: #2b333b
                     &.enough
-                        background : #00b43c
-                        color : #FFF
+                        background: #00b43c
+                        color: #FFF
                     &.not-enough
-                        background : #2b333b
+                        background: #2b333b
+        .ball-container
+            .ball
+                position : fixed
+                left : 32px
+                bottom: 22px
+                z-index : 200
+                &.drop-enter-active, &.drop-leave-active
+                    transition : all 0.4s
+                .inner
+                    width :16px
+                    height : 16px
+                    border-radius : 50%
+                    background : rgb(0, 160, 220)
+                    transition : all 0.4s
 </style>
