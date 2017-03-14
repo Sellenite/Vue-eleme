@@ -16,11 +16,13 @@
             </div>
         </div>
         <div class="ball-container">
-            <transition name="drop">
-                <div class="ball" v-for="ball in balls" v-show="ball.show">
-                    <div class="inner"></div>
-                </div>
-            </transition>
+            <div v-for="ball in balls">
+                <transition name="drop" v-on:before-enter="beforeDrop" v-on:enter="dropping" v-on:after-enter="afterDrop">
+                    <div class="ball" v-show="ball.show">
+                        <div class="inner inner-hook"></div>
+                    </div>
+                </transition>
+            </div>
         </div>
     </div>
 </template>
@@ -61,7 +63,8 @@
                     {
                         show: false
                     }
-                ]
+                ],
+                dropBalls: []
             };
         },
         computed: {
@@ -96,6 +99,56 @@
         methods: {
             drop(target) {
                 console.log(target);
+                for (let i = 0; i < this.balls.length; i++) {
+                    let ball = this.balls[i];
+                    if (!ball.show) {
+                        /* 触发transition的关键 */
+                        ball.show = true;
+                        /* 将加号的那个元素dom储存在小球里 */
+                        ball.target = target;
+                        this.dropBalls.push(ball);
+                        /* 必须return，不然小球一口气都进去了，全部都没有了 */
+                        return;
+                    }
+                }
+            },
+            /* transition的JavaScript钩子，el是正在执行动画的dom对象 */
+            beforeDrop(el) {
+                let count = this.balls.length;
+                while (count--) {
+                    let ball = this.balls[count];
+                    if (ball.show) {
+                        /* 获得target的上下左右相对于屏幕的偏移集合 */
+                        let rect = ball.target.getBoundingClientRect();
+                        let x = rect.left - 32;
+                        /* 位移y是负值 */
+                        let y = -(window.innerHeight - rect.top - 22);
+                        el.style.display = '';
+                        el.style.webkitTransform = `translate3d(0,${y}px,0)`;
+                        el.style.transform = `translate3d(0,${y}px,0)`;
+                        let inner = el.getElementsByClassName('inner-hook')[0];
+                        inner.style.webkitTransform = `translate3d(${x}px,0,0)`;
+                        inner.style.transform = `translate3d(${x}px,0,0)`;
+                    }
+                }
+            },
+            dropping(el) {
+                /*  eslint-disable no-unused-vars */
+                let rf = el.offsetHeight; // 触发浏览器重绘
+                this.$nextTick(() => {
+                    el.style.webkitTransform = 'translate3d(0,0,0)';
+                    el.style.transform = 'translate3d(0,0,0)';
+                    let inner = el.getElementsByClassName('inner-hook')[0];
+                    inner.style.webkitTransform = 'translate3d(0,0,0)';
+                    inner.style.transform = 'translate3d(0,0,0)';
+                });
+            },
+            afterDrop(el) {
+                let ball = this.dropBalls.shift();
+                if (ball) {
+                    ball.show = false;
+                    el.style.display = 'none';
+                }
             }
         }
     };
@@ -193,16 +246,15 @@
                         background: #2b333b
         .ball-container
             .ball
-                position : fixed
-                left : 32px
+                position: fixed
+                left: 32px
                 bottom: 22px
-                z-index : 200
-                &.drop-enter-active, &.drop-leave-active
-                    transition : all 0.4s
+                z-index: 200
+                transition: all 0.4s cubic-bezier(0.49,-0.29,0.75,0.41)
                 .inner
-                    width :16px
-                    height : 16px
-                    border-radius : 50%
-                    background : rgb(0, 160, 220)
-                    transition : all 0.4s
+                    width: 16px
+                    height: 16px
+                    border-radius: 50%
+                    background: rgb(0, 160, 220)
+                    transition: all 0.4s linear
 </style>

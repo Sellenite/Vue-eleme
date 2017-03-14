@@ -59,7 +59,7 @@
                 transition: all .2s linear
             &.move-enter, &.move-leave-active
                 opacity: 0
-                transform: translate3D(24px, 0, 0) rotate(180deg)
+                transform: translate3d(24px, 0, 0) rotate(180deg)
         .cart-count
             display: inline-block
             vertical-align: top
