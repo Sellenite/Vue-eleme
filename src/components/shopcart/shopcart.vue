@@ -94,8 +94,8 @@
             }
         },
         methods: {
-            drop(el) {
-
+            drop(target) {
+                console.log(target);
             }
         }
     };
