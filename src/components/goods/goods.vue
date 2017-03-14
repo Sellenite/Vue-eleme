@@ -30,7 +30,7 @@
                                     <span v-show="food.oldPrice" class="old">￥{{food.oldPrice}}</span>
                                 </div>
                                 <div class="cartcontrol-wrapper">
-                                    <cartcontrol v-bind:food="food" ></cartcontrol>
+                                    <cartcontrol v-bind:food="food" v-on:add="addFood"></cartcontrol>
                                 </div>
                             </div>
                         </li>
@@ -145,6 +145,7 @@
             _drop(target) {
                 // 体验优化,异步执行下落动画
                 this.$nextTick(() => {
+                    alert(target);
                     this.$refs.shopcart.drop(target);
                 });
             }
