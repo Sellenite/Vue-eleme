@@ -94,6 +94,7 @@
                 }
                 return 0;
             },
+            /* 计算功能，只要food.count有变化就push进去到selectFoods */
             selectFoods() {
                 let foods = [];
                 this.goods.forEach((good) => {
@@ -144,6 +145,7 @@
                 let el = foodList[index];
                 this.foodScroll.scrollToElement(el, 300);
             },
+            /* 点击物品查看详情，弹出food框 */
             selectFood(food, event) {
                 if (!event._constructed) {
                     return;
@@ -151,6 +153,7 @@
                 this.selectedFood = food;
                 this.$refs.foodHook.show();
             },
+            /* 从cartcontrol触发到goods然后传入target再调用shopcart的方法 */
             addFood(target) {
                 this._drop(target);
             },
