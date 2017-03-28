@@ -72,7 +72,6 @@ export default {
             if (!event._constructed) {
                 return;
             }
-            this.selectType = type;
             this.$emit('selectedType', type);
         },
         /* 只看有内容的评价的切换 */
@@ -80,8 +79,8 @@ export default {
             if (!event._constructed) {
                 return;
             }
-            this.onlyContent = !this.onlyContent;
-            this.$emit('toggle', this.onlyContent);
+            let NewOnlyContent = !this.onlyContent;
+            this.$emit('toggle', NewOnlyContent);
         }
     }
 };
