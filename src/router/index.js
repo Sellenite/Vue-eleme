@@ -6,15 +6,13 @@ import seller from '../components/seller/seller';
 
 Vue.use(Router);
 
-let router = new Router();
-router.push(
-    {
-        path: '/goods'
-    }
-);
-
 export default new Router({
     routes: [
+        {
+            path: '/',
+            name: 'default',
+            component: goods
+        },
         {
             path: '/goods', component: goods
         },
