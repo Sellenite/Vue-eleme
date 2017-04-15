@@ -17,28 +17,37 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import header from './components/header/header.vue';
+import header from './components/header/header.vue';
+import { urlParse } from './common/js/util.js';
 
-    const ERR_OK = 0;
+const ERR_OK = 0;
 
-    export default {
-        data() {
-            return {
-                seller: {}
-            };
-        },
-        created() {
-            this.$http.get('/api/seller').then((response) => {
-                response = response.body;
-                if (response.errno === ERR_OK) {
-                    this.seller = response.data;
-                }
-            });
-        },
-        components: {
-            'v-header': header
-        }
-    };
+export default {
+    data() {
+        return {
+            seller: {
+                id: (() => {
+                    let queryParam = urlParse();
+                    console.log(queryParam);
+                    return queryParam.id;
+                })()
+            }
+        };
+    },
+    created() {
+        this.$http.get('/api/seller?id=' + this.seller.id).then((response) => {
+            response = response.body;
+            if (response.errno === ERR_OK) {
+                /* ES6语法，assign()用于对象的合并，第一个是目标对象，第二和第三都是源对象，这里是为了保留seller里面的id值 */
+                this.seller = Object.assign({}, this.seller, response.data);
+                console.log(this.seller.id);
+            }
+        });
+    },
+    components: {
+        'v-header': header
+    }
+};
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
